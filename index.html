@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>PRO-CUT L5/S1 | Система сушки и сохранения мяса для Михи</title>
+  <style>
+    :root {
+      --bg-deep: #06090e;
+      --bg-surface: #0d131d;
+      --bg-elevated: #131c2b;
+      --bg-glass: rgba(19, 28, 43, 0.75);
+      --border: #1e2d44;
+      --border-highlight: rgba(16, 185, 129, 0.4);
+      --primary: #10b981;       /* Изумрудный неон - жиросжигание и здоровье */
+      --primary-glow: rgba(16, 185, 129, 0.25);
+      --secondary: #3b82f6;     /* Электрик синий - тонус и мощь */
+      --warning: #f59e0b;       /* Янтарный - внимание к технике */
+      --danger: #f43f5e;        /* Красный коралл - защита L5/S1 */
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    html, body {
+      width: 100%;
+      overflow-x: hidden;
+      background-color: var(--bg-deep);
+      background-image: 
+        radial-gradient(circle at 10% 10%, rgba(16, 185, 129, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 90% 30%, rgba(59, 130, 246, 0.08) 0%, transparent 40%);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ================= АНИМАЦИИ ================= */
+    @keyframes fadeUp {
+      0% { opacity: 0; transform: translateY(22px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.45); }
+      50% { box-shadow: 0 0 20px 4px rgba(16, 185, 129, 0.2); }
+    }
+
+    @keyframes dangerPulse {
+      0%, 100% { border-color: rgba(244, 63, 94, 0.35); }
+      50% { border-color: rgba(244, 63, 94, 0.8); }
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-4px); }
+    }
+
+    .anim-block {
+      animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    .delay-1 { animation-delay: 0.08s; }
+    .delay-2 { animation-delay: 0.16s; }
+    .delay-3 { animation-delay: 0.24s; }
+    .delay-4 { animation-delay: 0.32s; }
+    .delay-5 { animation-delay: 0.40s; }
+
+    /* ================= КОНТЕЙНЕР ================= */
+    .app-container {
+      width: 100%;
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 14px 12px 70px;
+    }
+
+    /* Верхний бар */
+    .header-bar {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 14px 16px;
+      margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header-bar::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary), var(--primary));
+      background-size: 200% 100%;
+      animation: shimmer 4s infinite linear;
+    }
+
+    .brand-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .brand-logo {
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .live-dot {
+      width: 9px;
+      height: 9px;
+      background: var(--primary);
+      border-radius: 50%;
+      display: inline-block;
+      animation: pulseGlow 2s infinite;
+    }
+
+    .coach-pill {
+      font-size: 11px;
+      font-weight: 700;
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      padding: 3px 9px;
+      border-radius: 999px;
+    }
+
+    .btn-export {
+      width: 100%;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #03150e;
+      font-weight: 800;
+      font-size: 14px;
+      padding: 13px 16px;
+      border-radius: var(--radius-md);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      transition: transform 0.2s, box-shadow 0.2s;
+      animation: pulseGlow 3s infinite;
+    }
+
+    .btn-export:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn-export:active {
+      transform: scale(0.98);
+    }
+
+    /* ================= HERO БЛОК ================= */
+    .hero-panel {
+      background: linear-gradient(155deg, #111c2d 0%, #0a101a 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px 16px;
+      margin-bottom: 16px;
+      position: relative;
+    }
+
+    .stats-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin: 14px 0;
+    }
+
+    .stat-pill {
+      background: rgba(6, 9, 14, 0.7);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px 6px;
+      text-align: center;
+    }
+
+    .stat-pill-lbl {
+      font-size: 10px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+
+    .stat-pill-val {
+      font-size: 14px;
+      font-weight: 900;
+      color: var(--primary);
+      margin-top: 2px;
+    }
+
+    h1 {
+      font-size: 21px;
+      font-weight: 900;
+      line-height: 1.25;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .hero-desc {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+
+    /* ================= КАРТОЧКИ СЕКЦИЙ ================= */
+    .card-section {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 18px 14px;
+      margin-bottom: 16px;
+      transition: border-color 0.25s;
+    }
+
+    .card-section:hover {
+      border-color: #2b4263;
+    }
+
+    .sec-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .sec-num {
+      font-size: 12px;
+      font-weight: 900;
+      color: var(--primary);
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      padding: 4px 9px;
+      border-radius: var(--radius-sm);
+      letter-spacing: 0.5px;
+    }
+
+    .sec-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .sec-sub {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+      line-height: 1.5;
+    }
+
+    /* ================= БЛОК МРТ И СИДЯЧЕЙ РАБОТЫ ================= */
+    .mri-alert {
+      background: rgba(244, 63, 94, 0.06);
+      border: 1px solid rgba(244, 63, 94, 0.4);
+      border-radius: var(--radius-md);
+      padding: 14px 12px;
+      margin-bottom: 12px;
+      animation: dangerPulse 3.5s infinite;
+    }
+
+    .mri-title {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #fb7185;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .grid-2col {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    @media (min-width: 600px) {
+      .grid-2col {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .info-box {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px;
+    }
+
+    .info-box-title {
+      font-size: 13px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .info-box-text {
+      font-size: 12.5px;
+      color: #cbd5e1;
+      line-height: 1.5;
+    }
+
+    /* ================= КАЛЬКУЛЯТОР СУШКИ ================= */
+    .calc-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .field-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .field-wrap.full {
+      grid-column: span 2;
+    }
+
+    label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    input, select {
+      width: 100%;
+      background: var(--bg-deep);
+      border: 1px solid var(--border);
+      color: #fff;
+      padding: 11px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 600;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+    }
+
+    .deficit-hero {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.14) 0%, rgba(59, 130, 246, 0.08) 100%);
+      border: 1px solid var(--border-highlight);
+      border-radius: var(--radius-md);
+      padding: 16px 12px;
+      text-align: center;
+      margin: 12px 0;
+    }
+
+    .deficit-tag {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: var(--primary);
+      letter-spacing: 0.6px;
+    }
+
+    .deficit-kcal {
+      font-size: 36px;
+      font-weight: 900;
+      color: #fff;
+      margin: 4px 0;
+      transition: transform 0.2s;
+    }
+
+    .deficit-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* Анимированные полосы БЖУ */
+    .macro-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .macro-box {
+      background: var(--bg-deep);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 10px 8px;
+      text-align: center;
+    }
+
+    .macro-lbl {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .macro-val {
+      font-size: 19px;
+      font-weight: 900;
+      color: #fff;
+      margin: 3px 0;
+    }
+
+    .macro-kcal {
+      font-size: 10px;
+      color: #64748b;
+      margin-bottom: 6px;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 5px;
+      background: #1e293b;
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 99px;
+      transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* ================= ИНТЕРАКТИВНЫЙ ПРОГРЕСС ТРЕНИРОВКИ ================= */
+    .filter-tabs {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      margin-bottom: 12px;
+      scrollbar-width: none;
+    }
+
+    .filter-tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tab-btn {
+      background: var(--bg-deep);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 800;
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      color: #041d14;
+      border-color: var(--primary);
+    }
+
+    .day-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 12px;
+      margin-bottom: 14px;
+      transition: transform 0.25s, opacity 0.25s;
+    }
+
+    .day-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+      padding-bottom: 8px;
+      margin-bottom: 10px;
+      gap: 8px;
+    }
+
+    .day-title {
+      font-size: 14px;
+      font-weight: 900;
+      color: var(--primary);
+      text-transform: uppercase;
+    }
+
+    .time-pill {
+      font-size: 11px;
+      font-weight: 700;
+      color: #fff;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 3px 8px;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+
+    .ex-row {
+      background: var(--bg-deep);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px;
+      margin-bottom: 7px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      transition: border-color 0.2s, transform 0.15s;
+      cursor: pointer;
+    }
+
+    .ex-row:hover {
+      border-color: var(--primary);
+      transform: translateX(3px);
+    }
+
+    .ex-row.done {
+      opacity: 0.55;
+      border-color: rgba(16, 185, 129, 0.4);
+      background: rgba(16, 185, 129, 0.05);
+    }
+
+    .ex-left {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+    }
+
+    .check-circle {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid #475569;
+      margin-top: 2px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: transparent;
+      transition: all 0.2s;
+    }
+
+    .ex-row.done .check-circle {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #03150e;
+      font-weight: 900;
+    }
+
+    .ex-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .ex-cue {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .ex-sets {
+      font-size: 11.5px;
+      font-weight: 800;
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      padding: 4px 8px;
+      border-radius: 6px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* ================= КАРТОЧКИ ТЕХНИКИ И БИОМЕХАНИКИ ================= */
+    .tech-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 12px;
+      margin-bottom: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tech-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .tech-name {
+      font-size: 14.5px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .tech-badge {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: var(--primary);
+      background: rgba(16, 185, 129, 0.12);
+      padding: 3px 7px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    .tech-point {
+      font-size: 12.5px;
+      color: #cbd5e1;
+      margin-bottom: 5px;
+    }
+
+    .tech-point strong {
+      color: #38bdf8;
+    }
+
+    .spine-note {
+      background: rgba(245, 158, 11, 0.08);
+      border-left: 3px solid var(--warning);
+      padding: 7px 10px;
+      border-radius: 0 6px 6px 0;
+      font-size: 11.5px;
+      color: #fde68a;
+      margin-top: 8px;
+    }
+
+    /* ================= ПЕЧАТЬ В PDF ================= */
+    @media print {
+      body, html {
+        background: #ffffff !important;
+        color: #0f172a !important;
+      }
+      .btn-export, .filter-tabs {
+        display: none !important;
+      }
+      .app-container {
+        max-width: 100% !important;
+        padding: 0 !important;
+      }
+      .day-card {
+        display: block !important;
+        opacity: 1 !important;
+      }
+      .header-bar, .hero-panel, .card-section, .info-box, .day-card, .ex-row, .tech-card, .macro-box {
+        background: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        color: #0f172a !important;
+        box-shadow: none !important;
+        animation: none !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      h1, .sec-title, .ex-title, .tech-name, .deficit-kcal, .macro-val {
+        color: #0f172a !important;
+      }
+      .hero-desc, .sec-sub, .info-box-text, .ex-cue, .tech-point {
+        color: #334155 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+
+    <!-- ШАПКА -->
+    <header class="header-bar anim-block">
+      <div class="brand-row">
+        <div class="brand-logo">
+          <span class="live-dot"></span>
+          <span>RECOMP & SPINE-SAFE • МИХА</span>
+        </div>
+        <span class="coach-pill">PRO-УРОВЕНЬ (EX-TRAINER)</span>
+      </div>
+      <button class="btn-export" onclick="window.print()">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+        </svg>
+        Сохранить программу Михи в PDF
+      </button>
+    </header>
+
+    <!-- ПРИВЕТСТВИЕ И ПРОФИЛЬ МИХИ -->
+    <section class="hero-panel anim-block delay-1">
+      <h1>Здорово, Миха! Система сушки с сохранением мяса и защитой L5/S1</h1>
+      <p class="hero-desc">
+        Ты сам работал тренером и прекрасно понимаешь биомеханику, поэтому здесь нет банальщины для новичков. Программа собрана под твои текущие вводные: <strong>187 см / 111 кг</strong>, дефицит калорий с удержанием силовых, сидячая работа из дома и твоё МРТ (циркулярная протрузия L5/S1 3,2 мм + сглаженный лордоз).
+      </p>
+
+      <div class="stats-strip">
+        <div class="stat-pill">
+          <div class="stat-pill-lbl">Рост / Вес</div>
+          <div class="stat-pill-val">187 / 111</div>
+        </div>
+        <div class="stat-pill">
+          <div class="stat-pill-lbl">Цель</div>
+          <div class="stat-pill-val">Сушка</div>
+        </div>
+        <div class="stat-pill">
+          <div class="stat-pill-lbl">График</div>
+          <div class="stat-pill-val">4×60 мин</div>
+        </div>
+        <div class="stat-pill">
+          <div class="stat-pill-lbl">Фокус</div>
+          <div class="stat-pill-val">Щит L5/S1</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- СЕКЦИЯ 1: МРТ + СИДЯЧАЯ УДАЛЕНКА ИЗ ДОМА -->
+    <section class="card-section anim-block delay-2">
+      <div class="sec-header">
+        <span class="sec-num">01</span>
+        <h2 class="sec-title">Твой МРТ-профиль + Протокол под сидячую работу дома</h2>
+      </div>
+
+      <div class="mri-alert">
+        <div class="mri-title">⚠️ Главный триггер: Сидячая работа из дома + 111 кг веса</div>
+        <p style="font-size: 12.5px; color: #fecdd3;">
+          Миха, как тренер ты знаешь: в положении сидя со сглаженным лордозом внутридисковое давление на сегмент <strong>L5/S1 вырастает на 40–50%</strong> по сравнению со стоянием. Плюс при долгом сидении укорачивается подвздошно-поясничная мышца (iliopsoas), которая крепится к поясничным позвонкам и ещё сильнее тянет их.
+        </p>
+      </div>
+
+      <div class="grid-2col">
+        <div class="info-box">
+          <div class="info-box-title" style="color: var(--primary);">🏠 Чек-лист на удаленке дома</div>
+          <div class="info-box-text">
+            • <strong>Валик под поясницу:</strong> Подложи плотный валик на кресло на уровень L3–L5, чтобы принудительно возвращать физиологический лордоз.<br>
+            • <strong>Таймер 45 минут:</strong> Встал, сделал 10 разгибаний таза стоя и потянул подвздошно-поясничную мышцу в выпаде (по 30 сек на ногу).<br>
+            • <strong>Гидратация диска:</strong> На МРТ диск L5/S1 дегидратирован — держи на рабочем столе 2.5–3 л воды.
+          </div>
+        </div>
+
+        <div class="info-box">
+          <div class="info-box-title" style="color: var(--danger);">⛔ Железное табу в зале (даже по старой памяти)</div>
+          <div class="info-box-text">
+            • Никаких приседаний со штангой на спине, становых и румынских тяг со свободным весом.<br>
+            • Никаких тяг штанги в наклоне без упора грудью.<br>
+            • В жиме ногами — <strong>жесткий контроль крестца</strong> (не опускай платформу до подкручивания таза «butt wink»).<br>
+            • Никаких скручиваний лежа с отрывом поясницы.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- СЕКЦИЯ 2: КАЛЬКУЛЯТОР КБЖУ НА СУШКУ И СОХРАНЕНИЕ МЫШЦ -->
+    <section class="card-section anim-block delay-3">
+      <div class="sec-header">
+        <span class="sec-num">02</span>
+        <h2 class="sec-title">Калькулятор сушки и рекомпозиции (187 см / 111 кг)</h2>
+      </div>
+      <p class="sec-sub">
+        Питание ты держишь четко, поэтому делаем грамотный дефицит (по умолчанию <strong>-20%</strong>). При весе 111 кг белок считаем умно (~1.8–1.9 г на кг веса тела, что соответствует ~2.2 г на сухую массу), чтобы на 100% защитить мышцы от катаболизма. Каждый сброшенный килограмм жира с живота снимает до 4 кг рычаговой нагрузки с диска L5/S1!
+      </p>
+
+      <div class="calc-grid">
+        <div class="field-wrap">
+          <label for="w">Текущий вес (кг)</label>
+          <input type="number" id="w" value="111" min="50" max="180" step="0.5" oninput="calcCut()">
+        </div>
+        <div class="field-wrap">
+          <label for="h">Рост (см)</label>
+          <input type="number" id="h" value="187" min="150" max="220" oninput="calcCut()">
+        </div>
+        <div class="field-wrap">
+          <label for="a">Возраст</label>
+          <input type="number" id="a" value="24" min="18" max="70" oninput="calcCut()">
+        </div>
+        <div class="field-wrap">
+          <label for="def">Уровень дефицита</label>
+          <select id="def" onchange="calcCut()">
+            <option value="0.15">Мягкая рекомпозиция (-15%)</option>
+            <option value="0.20" selected>Оптимальная сушка (-20%)</option>
+            <option value="0.24">Ускоренный дефицит (-24%)</option>
+          </select>
+        </div>
+        <div class="field-wrap full">
+          <label for="act">Бытовая активность + Тренировки</label>
+          <select id="act" onchange="calcCut()">
+            <option value="1.36" selected>Работа из дома сидя + 4 силовые по 60 мин (Коэф. 1.36)</option>
+            <option value="1.45">Удаленка + 8 000 шагов в день + 4 силовые (Коэф. 1.45)</option>
+            <option value="1.55">Высокая активность + 10 000+ шагов + 4 силовые (Коэф. 1.55)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="deficit-hero">
+        <div class="deficit-tag">Целевой калораж Михи на сушку</div>
+        <div class="deficit-kcal" id="kcalTarget">2 365 ккал</div>
+        <div class="deficit-sub" id="kcalInfo">Поддержание: 2 956 ккал • Чистый дефицит: -591 ккал/сут (~0.6–0.8 кг жира в неделю)</div>
+      </div>
+
+      <div class="macro-cards">
+        <div class="macro-box">
+          <div class="macro-lbl">БЕЛКИ (Защита мышц)</div>
+          <div class="macro-val" id="pVal">205 г</div>
+          <div class="macro-kcal" id="pKcal">820 ккал (35%)</div>
+          <div class="progress-track">
+            <div class="progress-fill" id="pBar" style="width: 35%; background: #f43f5e;"></div>
+          </div>
+        </div>
+
+        <div class="macro-box">
+          <div class="macro-lbl">ЖИРЫ (Гормоны)</div>
+          <div class="macro-val" id="fVal">94 г</div>
+          <div class="macro-kcal" id="fKcal">846 ккал (36%)</div>
+          <div class="progress-track">
+            <div class="progress-fill" id="fBar" style="width: 36%; background: #f59e0b;"></div>
+          </div>
+        </div>
+
+        <div class="macro-box">
+          <div class="macro-lbl">УГЛЕВОДЫ (Топливо)</div>
+          <div class="macro-val" id="cVal">175 г</div>
+          <div class="macro-kcal" id="cKcal">700 ккал (29%)</div>
+          <div class="progress-track">
+            <div class="progress-fill" id="cBar" style="width: 29%; background: #10b981;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="spine-note">
+        <strong>Тренерская заметка по удержанию мышечной массы на дефиците:</strong> Чтобы мясо не «сыпалось» при похудении со 111 кг, держи рабочие веса в диапазоне 8–12 повторений (механический натяг — главный сигнал сохранения волокон) и концентрируй 60% дневных углеводов за 1.5 часа до тренировки и сразу после неё.
+      </div>
+    </section>
+
+    <!-- СЕКЦИЯ 3: 4-ДНЕВНЫЙ СПЛИТ (ПН, СР, ПТ, СБ ПО 60 МИНУТ) -->
+    <section class="card-section anim-block delay-4">
+      <div class="sec-header">
+        <span class="sec-num">03</span>
+        <h2 class="sec-title">Сплит Верх / Низ: Пн • Ср • Пт • Сб (ровно по 60 минут)</h2>
+      </div>
+      <p class="sec-sub">
+        Нажимай на упражнения, чтобы отмечать выполненные на тренировке, или переключай дни вкладками (при сохранении в PDF печатаются все 4 дня сразу). Пятница и суббота разведены на Верх и Низ, чтобы ЦНС и мышцы восстанавливались на 100%.
+      </p>
+
+      <!-- Фильтр дней -->
+      <div class="filter-tabs">
+        <button class="tab-btn active" onclick="filterDay('all', this)">Все 4 дня</button>
+        <button class="tab-btn" onclick="filterDay('mon', this)">Пн (Верх А)</button>
+        <button class="tab-btn" onclick="filterDay('wed', this)">Ср (Низ А)</button>
+        <button class="tab-btn" onclick="filterDay('fri', this)">Пт (Верх Б)</button>
+        <button class="tab-btn" onclick="filterDay('sat', this)">Сб (Низ Б)</button>
+      </div>
+
+      <!-- ПОНЕДЕЛЬНИК -->
+      <div class="day-card" data-day="mon">
+        <div class="day-header">
+          <div class="day-title">Понедельник • ВЕРХ А (Тяжелый жим + Широчайшие с опорой)</div>
+          <span class="time-pill">⏱ 60 минут</span>
+        </div>
+
+        <div class="ex-row" onclick="this.classList.toggle('done')">
+          <div class="ex-left">
+            <div class="check-circle">✓</div>
+            <div>
+              <div class="ex-title">1. Разминка: Вскрытие грудного отдела + «Кошка-Корова» + Ротаторы</div>
+              <div class="ex-cue">После домашнего кресла сначала разблокируй грудной отдел, чтобы не гнуть L5/S1</div>
+            </div>
+          </div>
+          <span class="ex-sets">7 мин</span>
+        </div>
+
+        <div class="ex-row" onclick="this.classList.toggle('done')">
+          <div class="ex-left">
+            <div class="check-circle">✓</div>
+            <div>
+              <div class="ex-title">2. Жим штанги или гантелей лежа на горизонтальной скамье</div>
+              <div class="ex-cue">Лопатки сведены, но без лифтерского моста в пояснице (таз и ребра стабильны) • RIR 1–2</div>
+            </div>
+          </div>
+          <span class="ex-sets">4 × 8–10</span>
+        </div>
+
+        <div class="ex-row" onclick="this.classList.toggle('done')">
+          <div class="ex-left">
+            <div class="check-circle">✓</div>
+            <div>
+              <div class="ex-title">3. Тяга рычажного тренажера (Хаммер) с упором грудью</div>
+              <div class="ex-cue">Подушка на 100% забирает нагрузку с поясницы, тяни локтями вниз-назад • Отдых 90 с</div>
+            </div>
+          </div>
+          <span class="ex-sets">4 × 10–12</span>
+        </div>
+
+        <div class="ex-row" onclick="this.classList.toggle('done')">
+          <div class="ex-left">
+            <div class="check-circle">✓</div>
+            <div>
+              <div class="ex-title">4. Жим гантелей (или в Смите) на наклонной скамье 30°</div>
+              <div class="ex-cue">Подконтрольная негативная фаза 2.5 сек, не отрывай поясницу от скамьи</div>
+            </div>
+          </div>
+          <span class="ex-sets">3 × 10–12</span>
+        </div>
+
+        <div class="ex-row" onclick="this.classList.toggle('done')">
+          <div class="ex-left">
+            <div class="check-circle">✓</div>
+            <div>
+              <div class="ex-title">5. Вертикальная тяга верхнего блока нейтральным/широким хватом</div>
+              <div class="ex-cue">В верхней точке дай широчайшим и позвоночнику мягко растянуться под весом</div>
+            </div>
+          </div>
+          <span class="ex-sets">3 × 10–12</span>
+        </div>
+
+        <div class="ex-row" onclick="this.classList.toggle('done')">
+          <div class="ex-left">
+            <div class="check-circle">✓</div>
+            <div>
+              <div class="ex-title">6. Суперсет: Бицепс на скамье Скотта + Французский жим на блоке с канатом</div>
+              <div class="ex-cue">Высокая плотность под сушку, 0% осевой нагрузки и раскачки корпусом</div>
+            </div>
+          </div>
+          <span class="ex-sets">3 × 12–15</span>
+        </div>
+      </div>
+
+      <!-- СРЕДА -->
+      <div class="day-card" data-day="wed">
+        <div class="day-header">
+          <div class="day-title">Среда • НИЗ А (Квадрицепс + Бицепс бедра + Щит L5/S1)</div>
+          <span class="time-pill">⏱ 60 минут</span>
+        </div>
+
+        <div class="ex-row" onclick="this.classList.toggle('done')">
+          <div class="ex-left">
+            <div class="check-circle">✓</div>
+            <div>
+              <div class="ex-title">1. Растяжка подвздошно-поясничной мышцы + «Птица-Собака» (МакГилл)</div>
+              <div class="ex-cue">Снимаем спазм после сидячей работы перед нагрузкой на ноги (пауза 3 сек в пике)</div>
+            </div>
+          </div>
+          <span class="ex-sets">3 × 8 / стор.</span>
+        </div>
+
+        <div class="ex-row" onclick="this.classList.toggle('done')">
+          <div class="ex-left">
+            <div class="check-circle">✓</div>
+            <div>
+              <div class="ex-title">2. Сгибания ног лежа или сидя в тренажере (Предварительное утомление)</div>
+              <div class="ex-cue">Как тренер знаешь фишку: сначала наливаем кровью бицепс бедра, потом в жиме ногами суставам и спине в 2 раза легче!</div>
+            </div>
+          </div>
+          <span class="ex-sets">4 × 12–15</span>
+        </div>
+
+        <div class="ex-row" onclick="this.classList.toggle('done')">
+          <div class="ex-left">
+            <div class="check-circle">✓</div>
+            <div>
+              <div class="ex-title">3. Жим ногами в тренажере (или жим одной ногой поочередно)</div>
+              <div class="ex-cue">Жим 1 ногой дает ту же гипертрофию при вдвое меньшем давлении на таз и L5/S1! Крестец вжат в спинку</div>
+            </div>
+          </div>
+          <span class="ex-sets">4 × 10–12</span>
+        </div>
+
+        <div class="ex-row" onclick="this.classList.toggle('done')">
+          <div class="ex-left">
+            <div class="check-circle">✓</div>
+            <div>
+              <div class="ex-title">4. Болгарские сплит-приседания с гантелями (с опорой рукой о стойку)</div>
+              <div class="ex-cue">Держи гантель в одной руке, второй придерживайся за раму — мощная проработка бедра и ягодиц</div>
+            </div>
+          </div>
+          <span class="ex-sets">3 × 10 / ногу</span>
+        </div>
+
+        <div class="ex-row" onclick="this.classList.toggle('done')">
+          <div class="ex-left">
+            <div class="check-circle">✓</div>
+            <div>
+              <div class="ex-title">5. Разгибания ног сидя в тренажере (с паузой 1 сек вверху)</div>
+              <div class="ex-cue">Добивка квадрицепса в полной безопасности для позвоночника</div>
+            </div>
+          </div>
+          <span class="ex-sets">3 × 12–15</span>
+        </div>
+
+        <div class="ex-row" onclick="this.classList.toggle('done')">
+          <div class="ex-left">
+            <div class="check-circle">✓</div>
+            <div>
+              <div class="ex-title">6. Планка МакГилла + Боковая планка на предплечье</div>
+              <div class="ex-cue">Формируем жесткий мышечный корсет вокруг поясницы</div>
+            </div>
+          </div>
+          <span class="ex-sets">3 × 40 сек</span>
+        </div>
+      </div>
+
+      <!-- ПЯТНИЦА -->
+      <div class="day-card" data-day="fri">
+        <div class="day-header">
+          <div class="day-title">Пятница • ВЕРХ Б (Плечи с опорой + Толщина спины + Детализация)</div>
+          <span class="time-pill">⏱ 60 минут</span>
+        </div>
+
+        <div class="ex-row" onclick="this.classList.toggle('done')">
+          <div class="ex-left">
+            <div class="check-circle">✓</div>
+            <div>
+              <div class="ex-title">1. Подтягивания широким/средним хватом (или с резинкой/гравитроном на 111 кг)</div>
+              <div class="ex-cue">Отличная тракционная декомпрессия поясницы + ширина спины. Не спрыгивай с турника резко!</div>
+            </div>
+          </div>
+          <span class="ex-sets">4 × 8–10</span>
+        </div>
+
+        <div class="ex-row" onclick="this.classList.toggle('done')">
+          <div class="ex-left">
+            <div class="check-circle">✓</div>
+            <div>
+              <div class="ex-title">2. Жим гантелей сидя (угол наклона спинки скамьи 75–80°)</div>
+              <div class="ex-cue">Угол 75° вместо 90° убирает вертикальный вектор сжатия с L5/S1 и переносит его на спинку скамьи</div>
+            </div>
+          </div>
+          <span class="ex-sets">4 × 8–10</span>
+        </div>
+
+        <div class="ex-row" onclick="this.classList.toggle('done')">
+          <div class="ex-left">
+            <div class="check-circle">✓</div>
+            <div>
+              <div class="ex-title">3. Тяга гантелей лежа грудью на наклонной скамье 30–45° (Seal Row)</div>
+              <div class="ex-cue">Чистейшая работа ромбовидных и широчайших, поясница полностью выключена из риска</div>
+            </div>
+          </div>
+          <span class="ex-sets">3 × 10–12</span>
+        </div>
+
+        <div class="ex-row" onclick="this.classList.toggle('done')">
+          <div class="ex-left">
+            <div class="check-circle">✓</div>
+            <div>
+              <div class="ex-title">4. Отжимания на брусьях (или жим в Хаммере сидя на грудь)</div>
+              <div class="ex-cue">Ноги скрещены, без маятниковой раскачки поясницей</div>
+            </div>
+          </div>
+          <span class="ex-sets">3 × 10–12</span>
+        </div>
+
+        <div class="ex-row" onclick="this.classList.toggle('done')">
+          <div class="ex-left">
+            <div class="check-circle">✓</div>
+            <div>
+              <div class="ex-title">5. Суперсет: Махи гантелями в стороны СИДЯ + Тяга каната к лицу (Face Pull)</div>
+              <div class="ex-cue">3D-плечи + осанка для нейтрализации сутулости за домашним ПК</div>
+            </div>
+          </div>
+          <span class="ex-sets">4 × 15</span>
+        </div>
+
+        <div class="ex-row" onclick="this.classList.toggle('done')">
+          <div class="ex-left">
+            <div class="check-circle">✓</div>
+            <div>
+              <div class="ex-title">6. Суперсет: Сгибания с гантелями сидя (70°) + Разгибания на трицепс в кроссовере</div>
+              <div class="ex-cue">Памп рук на финише тренировки • Отдых 60 сек</div>
+            </div>
+          </div>
+          <span class="ex-sets">3 × 12–15</span>
+        </div>
+      </div>
+
+      <!-- СУББОТА -->
+      <div class="day-card" data-day="sat">
+        <div class="day-header">
+          <div class="day-title">Суббота • НИЗ Б (Задняя цепь + Тазовый пояс + Кардио-финишер)</div>
+          <span class="time-pill">⏱ 60 минут</span>
+        </div>
+
+        <div class="ex-row" onclick="this.classList.toggle('done')">
+          <div class="ex-left">
+            <div class="check-circle">✓</div>
+            <div>
+              <div class="ex-title">1. Ягодичный мост со штангой или в тренажере (Hip Thrust)</div>
+              <div class="ex-cue">Сильные ягодицы держат таз и снимают 70% нагрузки с L5/S1! Подбородок к груди, ребра опущены</div>
+            </div>
+          </div>
+          <span class="ex-sets">4 × 10–12</span>
+        </div>
+
+        <div class="ex-row" onclick="this.classList.toggle('done')">
+          <div class="ex-left">
+            <div class="check-circle">✓</div>
+            <div>
+              <div class="ex-title">2. Гакк-присед в тренажере (или жим ногами с высокой постановкой стоп)</div>
+              <div class="ex-cue">Таз и поясница вклеены в подушку. Опускайся строго до параллели без отрыва крестца</div>
+            </div>
+          </div>
+          <span class="ex-sets">3 × 10–12</span>
+        </div>
+
+        <div class="ex-row" onclick="this.classList.toggle('done')">
+          <div class="ex-left">
+            <div class="check-circle">✓</div>
+            <div>
+              <div class="ex-title">3. Ягодично-бицепсовая гиперэкстензия (строго до прямой линии!)</div>
+              <div class="ex-cue">Подушка ниже гребней подвздошных костей. Движение только в тазобедренном суставе за счет сжатия ягодиц!</div>
+            </div>
+          </div>
+          <span class="ex-sets">3 × 12–15</span>
+        </div>
+
+        <div class="ex-row" onclick="this.classList.toggle('done')">
+          <div class="ex-left">
+            <div class="check-circle">✓</div>
+            <div>
+              <div class="ex-title">4. Сгибания ног сидя/лежа + Подъемы на носки СИДЯ (икры без нагрузки на плечи)</div>
+              <div class="ex-cue">Икры делаем только сидя (не стоя с весом на плечах!)</div>
+            </div>
+          </div>
+          <span class="ex-sets">3 × 15</span>
+        </div>
+
+        <div class="ex-row" onclick="this.classList.toggle('done')">
+          <div class="ex-left">
+            <div class="check-circle">✓</div>
+            <div>
+              <div class="ex-title">5. Упражнение «Мертвый жук» (Dead Bug) + Жим Паллофа в блоке</div>
+              <div class="ex-cue">Антиротация и жесткая фиксация поясницы к полу — лучшая страховка при протрузии</div>
+            </div>
+          </div>
+          <span class="ex-sets">3 × 12</span>
+        </div>
+
+        <div class="ex-row" onclick="this.classList.toggle('done')">
+          <div class="ex-left">
+            <div class="check-circle">✓</div>
+            <div>
+              <div class="ex-title">6. Кардио под сушку: Ходьба на дорожке в горку (уклон 6–8%, 5 км/ч) или Эллипс</div>
+              <div class="ex-cue">Никакого ударного бега при 111 кг и протрузии L5/S1! Только безударный пульс 125–135 уд/мин</div>
+            </div>
+          </div>
+          <span class="ex-sets">12–15 мин</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- СЕКЦИЯ 4: ПРОФЕССИОНАЛЬНЫЕ НЮАНСЫ ТЕХНИКИ ДЛЯ МИХИ -->
+    <section class="card-section anim-block delay-5">
+      <div class="sec-header">
+        <span class="sec-num">04</span>
+        <h2 class="sec-title">Тренерские акценты биомеханики под твой L5/S1</h2>
+      </div>
+      <p class="sec-sub">
+        Миха, базу ты знаешь с закрытыми глазами, но когда тренируешь сам себя после рабочего дня за компом, легко поймать автопилот. Держи главные маячки контроля:
+      </p>
+
+      <div class="tech-card">
+        <div class="tech-head">
+          <span class="tech-name">1. Предварительное утомление ног и жим 1 ногой</span>
+          <span class="tech-badge">Лайфхак под L5/S1</span>
+        </div>
+        <div class="tech-point"><strong>Почему это работает:</strong> Когда начинаешь тренировку ног со сгибаний в тренажере и переходишь к жиму одной ногой, тебе не нужно вешать 300 кг на платформу, чтобы довести квадрицепс до отказа.</div>
+        <div class="tech-point"><strong>Контроль таза:</strong> При жиме одной ногой свободная нога стоит на полу — это на 100% блокирует задний наклон таза (подкручивание крестца в нижней точке), который и травмирует диск L5/S1.</div>
+      </div>
+
+      <div class="tech-card">
+        <div class="tech-head">
+          <span class="tech-name">2. Внутрибрюшное давление (Брейсинг 360°) вместо втягивания живота</span>
+          <span class="tech-badge">Стабилизация</span>
+        </div>
+        <div class="tech-point"><strong>Механика:</strong> Перед каждым рабочим подходом опусти нижние ребра к тазу и создай жесткое кольцо напряжения пресса и косых мышц (как будто ждешь удар в корпус).</div>
+        <div class="tech-point"><strong>Зачем:</strong> При сглаженном лордозе именно поперечная мышца живота и ягодицы удерживают позвонки L5 и S1 от сдвиговой нагрузки.</div>
+      </div>
+
+      <div class="tech-card">
+        <div class="tech-head">
+          <span class="tech-name">3. Жим Паллофа (Pallof Press) + «Мертвый жук»</span>
+          <span class="tech-badge">Анти-ротация</span>
+        </div>
+        <div class="tech-point"><strong>Как выполнять Жим Паллофа:</strong> Встань боком к блочному тренажеру на уровне груди, возьми рукоять двумя руками и выжми от груди вперед, сопротивляясь скручиванию корпуса (пауза 3 сек).</div>
+        <div class="tech-point"><strong>Эффект:</strong> Включает глубокие многораздельные мышцы спины (multifidus) без сгибания позвоночника.</div>
+      </div>
+
+      <div class="tech-card">
+        <div class="tech-head">
+          <span class="tech-name">4. Кардио и NEAT при весе 111 кг</span>
+          <span class="tech-badge">Жиросжигание</span>
+        </div>
+        <div class="tech-point"><strong>Безударный режим:</strong> Исключи бег по асфальту/дорожке и прыжки на скакалке — ударная волна при 111 кг бьет прямо в дегидратированный диск L5/S1.</div>
+        <div class="tech-point"><strong>Лучший выбор:</strong> Ходьба в горку на дорожке (держась за поручни не нужно!), эллипсоид или велотренажер с прямой спиной + 8 000–10 000 шагов в день вне зала.</div>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    function calcCut() {
+      const w = parseFloat(document.getElementById('w').value) || 111;
+      const h = parseFloat(document.getElementById('h').value) || 187;
+      const a = parseFloat(document.getElementById('a').value) || 24;
+      const def = parseFloat(document.getElementById('def').value) || 0.20;
+      const act = parseFloat(document.getElementById('act').value) || 1.36;
+
+      // Формула Миффлина-Сан Жеора для мужчины
+      const bmr = (10 * w) + (6.25 * h) - (5 * a) + 5;
+      const tdee = Math.round(bmr * act);
+      const cutKcal = Math.round(tdee * (1 - def));
+      const diff = tdee - cutKcal;
+
+      // БЖУ под сушку с сохранением мышечной массы для крупного атлета:
+      // Белок: ~1.85 г на кг общего веса (около 205 г при 111 кг — оптимум для удержания мышц)
+      const proteinG = Math.round(w * 1.85);
+      const proteinKcal = proteinG * 4;
+
+      // Жиры: ~0.85 г на кг веса для поддержки тестостерона и суставов
+      const fatG = Math.round(w * 0.85);
+      const fatKcal = fatG * 9;
+
+      // Углеводы: остаток калорий
+      const carbKcal = Math.max(400, cutKcal - proteinKcal - fatKcal);
+      const carbG = Math.round(carbKcal / 4);
+
+      const totalCalcKcal = proteinKcal + fatKcal + (carbG * 4);
+      const pPct = Math.round((proteinKcal / totalCalcKcal) * 100);
+      const fPct = Math.round((fatKcal / totalCalcKcal) * 100);
+      const cPct = Math.max(10, 100 - pPct - fPct);
+
+      document.getElementById('kcalTarget').textContent = cutKcal.toLocaleString('ru-RU') + ' ккал';
+      document.getElementById('kcalInfo').textContent =
+        `Поддержание: ${tdee.toLocaleString('ru-RU')} ккал • Чистый дефицит: -${diff} ккал/сут (~0.6–0.8 кг жира в нед.)`;
+
+      document.getElementById('pVal').textContent = proteinG + ' г';
+      document.getElementById('pKcal').textContent = `${proteinKcal} ккал (${pPct}%)`;
+      document.getElementById('pBar').style.width = pPct + '%';
+
+      document.getElementById('fVal').textContent = fatG + ' г';
+      document.getElementById('fKcal').textContent = `${fatKcal} ккал (${fPct}%)`;
+      document.getElementById('fBar').style.width = fPct + '%';
+
+      document.getElementById('cVal').textContent = carbG + ' г';
+      document.getElementById('cKcal').textContent = `${carbG * 4} ккал (${cPct}%)`;
+      document.getElementById('cBar').style.width = cPct + '%';
+    }
+
+    function filterDay(day, btn) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      document.querySelectorAll('.day-card').forEach(card => {
+        if (day === 'all' || card.dataset.day === day) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', calcCut);
+  </script>
+</body>
+</html>
